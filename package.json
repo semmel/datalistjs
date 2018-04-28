@@ -1,0 +1,18 @@
+{
+  "name": "datalistjs",
+  "version": "1.0.0",
+  "description": "a datalist polyfill",
+  "main": "datalist.js",
+  "dependencies" :{
+	  "baconjs": ">=2.0",
+	  "ramda": ">=0.25.0"
+  },
+	"scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "datalist"
+  ],
+  "author": "Matthias Seemann",
+  "license": "MIT"
+}

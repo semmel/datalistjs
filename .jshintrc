@@ -1,0 +1,20 @@
+{
+	"laxbreak": true,
+	"noempty": true,
+	"noarg": true,
+	"laxcomma": true,
+	"unused": "strict",
+	"esversion": 6,
+	"sub": true,
+	"devel": true,
+	"immed": true,
+	"browser": true,
+	"node": true,
+	"curly": true,
+	"undef": true,
+	"nonew": true,
+	"forin": true,
+	"shadow": "outer",
+	"mocha": true,
+	"predef": [ "require", "requirejs", "define"]
+}
