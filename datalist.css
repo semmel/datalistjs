@@ -1,0 +1,16 @@
+.datalist-polyfill {
+	list-style: none;
+	display: none;
+	background: white;
+	-webkit-box-shadow: 0 2px 2px #999;
+	box-shadow: 0 2px 2px #999;
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+.datalist-polyfill li {
+	padding: 3px;
+}

@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"/>
 	<meta name="referrer" content="no-referrer"/>
 	<meta name="referrer" content="never"/>
+
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+
+	<link type=text/css rel=stylesheet href="datalist.css"/>
 	<title>datalistjs Demo</title>
 </head>
 <body>
@@ -14,7 +20,7 @@
 	</p>
 	<p>
 		<label>Select a state:</label>
-		<input type="text" list="states">
+		<input type="text" tha-list="states">
 	</p>
 
 	<datalist id="states">
@@ -71,16 +77,17 @@
 	</datalist>
 
 	<p>
-		<label>Select placeholder text:</label>
-		<input type="text" list="samples">
+		<label>Select a browser:</label>
+		<input type="text" tha-list="browsers">
 	</p>
 
-	<datalist id="samples">
-		<option value="foo">
-		<option value="bar">
-		<option value="baz">
-		<option value="lorem ipsum">
-		<option value="example.com">
+	<datalist id="browsers">
+		<option value="Chrome"></option>
+		<option value="Firefox"></option>
+		<option value="Internet Explorer"></option>
+		<option value="Opera"></option>
+		<option value="Safari"></option>
+		<option value="Microsoft Edge"></option>
 	</datalist>
 
 	<div>
@@ -129,5 +136,14 @@
 <script src="node_modules/ramda/dist/ramda.js"></script>
 <script src="node_modules/baconjs/dist/Bacon.js"></script>
 <script src="datalist.js"></script>
+<script>
+	document.addEventListener('readystatechange', function()
+	{
+		if (document.readyState === "complete")
+		{
+			DataListJS.polyfill();
+		}
+	});
+</script>
 </body>
 </html>
