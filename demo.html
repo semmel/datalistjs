@@ -11,6 +11,12 @@
 	<meta http-equiv="Expires" content="0" />
 
 	<link type=text/css rel=stylesheet href="datalist.css"/>
+	<style type=text/css>
+		.main {
+			font-size: larger;
+			font-family: sans-serif;
+		}
+	</style>
 	<title>datalistjs Demo</title>
 </head>
 <body>
@@ -20,7 +26,7 @@
 	</p>
 	<p>
 		<label>Select a state:</label>
-		<input type="text" tha-list="states">
+		<input type="text" list="states">
 	</p>
 
 	<datalist id="states">
@@ -78,7 +84,7 @@
 
 	<p>
 		<label>Select a browser:</label>
-		<input type="text" tha-list="browsers">
+		<input type="text" list="browsers">
 	</p>
 
 	<datalist id="browsers">
@@ -88,6 +94,7 @@
 		<option value="Opera"></option>
 		<option value="Safari"></option>
 		<option value="Microsoft Edge"></option>
+		<option value="Brave"></option>
 	</datalist>
 
 	<div>
@@ -137,11 +144,16 @@
 <script src="node_modules/baconjs/dist/Bacon.js"></script>
 <script src="datalist.js"></script>
 <script>
+	var updatePositions = R.identity;
+
 	document.addEventListener('readystatechange', function()
 	{
 		if (document.readyState === "complete")
 		{
-			DataListJS.polyfill();
+			if (DataListJS.isNotNativelySupported)
+			{
+				updatePositions = DataListJS.polyfill();
+			}
 		}
 	});
 </script>

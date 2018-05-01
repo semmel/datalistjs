@@ -5,8 +5,8 @@
   
 /**
  * @typedef {Object} Module_datalist
- * @property {Boolean} isNativelySupported
- * @property {function} polyfill
+ * @property {Boolean} isNotNativelySupported
+ * @property {function(HTMLElement=): function():void} polyfill
  */
 
 (function (root, factory) {
@@ -61,6 +61,95 @@ function (R, Bacon)
 	}
 	
 	const
+		/**
+		 *
+		 * @param {HTMLElement} targetElement
+		 * @return {Boolean}
+		 * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight#Problems_and_solutions
+		 */
+		isElementTotallyScrolled = function(targetElement)
+		{
+			return targetElement.scrollHeight - targetElement.scrollTop <= targetElement.clientHeight;
+		},
+		
+		/**
+		 * @see https://github.com/willmcpo/body-scroll-lock
+		 * @param {HTMLElement} targetElement
+		 * @return {function():void}
+		 */
+		disableBodyScroll = function(targetElement)
+		{
+			/**
+			 *
+			 * @param {TouchEvent} initialTouchEvent
+			 */
+			function preventPageScrollingAtElementScrollEndingsStartingWithEvent(initialTouchEvent)
+			{
+				if (initialTouchEvent.targetTouches.length !== 1)
+				{
+					return;
+				}
+				
+				const
+					/** @type {Bacon.EventStream<E, TouchEvent>} */
+					touchMoveAtScrollEnding =
+						Bacon.fromEvent(targetElement, 'touchmove')
+						.filter(
+							/**
+							 *
+							 * @param {TouchEvent} touchEvent
+							 * @return {Boolean}
+							 */
+							function(touchEvent)
+							{
+								if (touchEvent.targetTouches.length !== 1)
+								{
+									return false;
+								}
+								
+								const
+									isScrollingDown = touchEvent.targetTouches[0].clientY - initialTouchEvent.targetTouches[0].clientY > 0;
+								
+								return (isScrollingDown && (targetElement.scrollTop === 0)) ||
+									(!isScrollingDown && isElementTotallyScrolled(targetElement));
+							}
+						)
+						.takeUntil(Bacon.fromEvent(targetElement, 'touchend'));
+					
+				touchMoveAtScrollEnding
+				.onValue(function (touchEvent)
+				{
+					touchEvent.preventDefault();
+				});
+			}
+			
+			targetElement.addEventListener('touchstart', preventPageScrollingAtElementScrollEndingsStartingWithEvent, false);
+			
+			return function()
+			{
+				targetElement.removeEventListener('touchstart', preventPageScrollingAtElementScrollEndingsStartingWithEvent);
+			};
+		};
+	
+	/**
+	 *
+	 * @param {MutationObserverInit} initOptions
+	 * @param {Node} domNode
+	 * @return {Bacon.EventStream<E, Array<MutationRecord>>}
+	 */
+	function mutationsForElement(initOptions, domNode)
+	{
+		return Bacon.fromBinder(function (sink)
+		{
+			const
+				observer = new MutationObserver(sink);
+			observer.observe(domNode, initOptions);
+			
+			return function () { observer.disconnect(); };
+		});
+	}
+	
+	const
 		truthy = R.identical(true),
 		falsy = R.identical(false),
 		/**
@@ -107,31 +196,26 @@ function (R, Bacon)
 		},
 		
 		/**
+		 * @param {HTMLInputElement} inputField
 		 * @return {HTMLUListElement}
 		 */
-		createSelectionContainer = function()
+		createSelectionContainerForInput = function(inputField)
 		{
 			const
-				selectBox = document.createElement('ul');
+				selectBox = document.createElement('ul'),
+				/**
+				 *
+				 * @type {CSSStyleDeclaration}
+				 */
+				inputFieldStyle = window.getComputedStyle(inputField);
 			
 			selectBox.classList.add('datalist-polyfill');
 			
-			document.body.appendChild(selectBox);
+			selectBox.style.backgroundColor = inputFieldStyle.backgroundColor;
+			selectBox.style.color = inputFieldStyle.color;
 			
 			return selectBox;
-		},
-		
-		/**
-		 *
-		 * @param {HTMLElement} domElement
-		 * @return {Bacon.EventStream<E, Event>}
-		 */
-		firstClickOnDomElement = function(domElement)
-		{
-			return Bacon.fromEvent(domElement, 'click');
 		};
-	
-	
 	
 	const
 		 isDatalistSupported = !!(document.createElement('datalist') && window.HTMLDataListElement);
@@ -139,34 +223,36 @@ function (R, Bacon)
 	/**
 	 *
 	 * @param {HTMLElement} [parent=document.body]
+	 * @return {function(): void} update the positions of the select boxes according to the changed positions of the input elements
 	 */
 	function initialize(parent)
 	{
 		const
-			inputs = (parent || document.body).querySelectorAll('input[tha-list]'),
+			inputs = (parent || document.body).querySelectorAll('input[list]'),
 			
-			resizingPage = Bacon.fromEvent(window, 'resize');
+			resizingPage = Bacon.fromEvent(window, 'resize'),
 		
-		inputs.forEach(
 			/**
 			 *
 			 * @param {HTMLInputElement} inputElement
+			 * @return {function():void}
 			 */
-			function (inputElement)
+			setupInputElement = function (inputElement)
 			{
 				const
-					selectBox = createSelectionContainer(),
-					dataListElement = /** @type {HTMLDataListElement} */ document.getElementById(inputElement.getAttribute('tha-list')),
+					selectBox = createSelectionContainerForInput(inputElement),
+					dataListElement = /** @type {HTMLDataListElement} */ document.getElementById(inputElement.getAttribute('list')),
 					optionsLiveCollection = dataListElement.getElementsByTagName('option'),
 					
 					positionListAccordingToInput = positionTargetBelowSourceElement.bind(undefined, selectBox, inputElement),
 					
-					 // TODO MutationObserver.any.records.type == childList
 					/** @type {Bacon.Property<E, Array<String>>} */
 					options =
-						Bacon.never()
+						mutationsForElement({childList: true}, dataListElement)
+						.filter(R.filter(R.propEq('type', 'childList')))
 						.map(optionsLiveCollection)
-						.toProperty(R.pluck('value')(optionsLiveCollection)),
+						.toProperty(optionsLiveCollection)
+						.map(R.pluck('value')),
 						
 					hasFocus = Bacon.mergeAll(
 						Bacon.fromEvent(inputElement, 'focus').map(true),
@@ -214,7 +300,7 @@ function (R, Bacon)
 					/** @type {Bacon.Property<E, Array<HTMLElement>>} */
 					optionButtons =
 						matchedOptions
-						.filter(R.propSatisfies(R.lt(0), 'length'))
+						.filter(R.complement(R.isEmpty))
 						.skipDuplicates(R.equals)
 						.map(R.map(createListElementWithValue)),
 					
@@ -222,7 +308,10 @@ function (R, Bacon)
 					 *
 					 * @type {Bacon.EventStream<E, Boolean>}
 					 */
-					toggledAreAnyOptionsMatched = matchedOptions.map(R.complement(R.isEmpty)).changes(),
+					toggledAreAnyOptionsMatched =
+						matchedOptions
+						.map(R.complement(R.isEmpty))
+						.changes(),
 					
 					selecting =
 						optionButtons
@@ -269,13 +358,25 @@ function (R, Bacon)
 				
 				selecting
 				.onValue(populateInputWithValue(inputElement));
-			}
-		);
+				
+				disableBodyScroll(selectBox);
+				
+				inputElement.parentElement.appendChild(selectBox);
+				
+				return positionListAccordingToInput;
+			};
+			
+		const
+			allPositionUpdateFunctions = R.map(setupInputElement, Array.from(inputs));
 		
+		return function()
+		{
+			R.forEach(R.call, allPositionUpdateFunctions);
+		};
 	}
 	
 	return {
 		polyfill: initialize,
-		isNativelySupported: isDatalistSupported
+		isNotNativelySupported: !isDatalistSupported
 	};
 }));

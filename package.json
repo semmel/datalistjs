@@ -4,8 +4,8 @@
   "description": "a datalist polyfill",
   "main": "datalist.js",
   "dependencies" :{
-	  "baconjs": ">=2.0",
-	  "ramda": ">=0.25.0"
+	  "baconjs": ">=2.0 <3.0",
+	  "ramda": ">=0.25.0 <0.27.0"
   },
 	"scripts": {
     "test": "mocha"

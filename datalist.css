@@ -2,15 +2,20 @@
 	list-style: none;
 	display: none;
 	background: white;
-	-webkit-box-shadow: 0 2px 2px #999;
-	box-shadow: 0 2px 2px #999;
+	-webkit-box-shadow: 0 2px 2px grey;
+	box-shadow: 0 2px 2px grey;
 	position: absolute;
 	margin: 0;
 	padding: 0;
-	max-height: 300px;
+	max-height: 150px;
 	overflow-y: auto;
 }
 
 .datalist-polyfill li {
 	padding: 3px;
+}
+
+.datalist-polyfill li:active {
+	transform: scale(0.9);
+	opacity: 0.2;
 }
