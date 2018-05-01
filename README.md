@@ -31,6 +31,19 @@ Exported items:
 <head>
 <link type=text/css rel=stylesheet href="datalist.css"/>
 </head>
+<p>
+    <label>Select a browser:</label>
+    <input type="text" list="browsers">
+</p>
+<datalist id="browsers">
+    <option value="Chrome"></option>
+    <option value="Firefox"></option>
+    <option value="Internet Explorer"></option>
+    <option value="Opera"></option>
+    <option value="Safari"></option>
+    <option value="Microsoft Edge"></option>
+    <option value="Brave"></option>
+</datalist>
 ...
 <!-- no JS module loader used -->
 <script src="node_modules/ramda/dist/ramda.js"></script>
