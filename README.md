@@ -1,8 +1,13 @@
 # datalistjs
-yet another [`<datalist>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist) implementation for Safari (the only browser still not supporting `<datalist>`)
+yet another [`<datalist>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist) implementation for Safari (the only browser still [not supporting](https://caniuse.com/#feat=datalist) `<datalist>`)
+
+### Motivation
+The only actively maintained polyfill project [mfranzke/datalist-polyfill](https://github.com/mfranzke/datalist-polyfill) chooses to employ the [iOS wheel picker](https://developer.apple.com/ios/human-interface-guidelines/controls/pickers/) presenting the selection options. Which IMO is huge and obtrusive and really breaks the UI - so sad!
+
+ [Consider designing smarter dropdowns](https://medium.com/@kollinz/dropdown-alternatives-for-better-mobile-forms-53e40d641b53)
 
 ### Features
-* Works by attaching a scrollable option list below the targeted input element - no ugly native form selects are used.
+* Works by attaching a scrollable dropdown-like option list below the targeted input element - no ugly iOS picker wheels are used.
 * Detects changes to the `<datalist>` items and updates option list items accordingly.
 * Tested on iOS 9-11
 
@@ -50,17 +55,17 @@ Exported items:
 <script src="node_modules/baconjs/dist/Bacon.js"></script>
 <script src="datalist.js"></script>
 <script>
-	var updatePositions = R.identity;
+var updatePositions = R.identity;
 
-	document.addEventListener('readystatechange', function()
-	{
-		if (document.readyState === "complete")
-		{
-			if (DataListJS.isNotNativelySupported)
-			{
-				updatePositions = DataListJS.polyfill();
-			}
-		}
-	});
+document.addEventListener('readystatechange', function()
+{
+    if (document.readyState === "complete")
+    {
+        if (DataListJS.isNotNativelySupported)
+        {
+            updatePositions = DataListJS.polyfill();
+        }
+    }
+});
 </script>
 ```
