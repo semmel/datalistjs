@@ -1,5 +1,5 @@
 # datalistjs
-<img align="right" src="https://rawgit.com/semmel/datalistjs/master/artwork/datalist_demo_screen_recording.gif"/>
+<img align="right" src="/artwork/datalist_demo_screen_recording.gif?raw=true"/>
 
 yet another [`<datalist>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist) implementation for Safari (the only browser still [not supporting](https://caniuse.com/#feat=datalist) `<datalist>`)
 
