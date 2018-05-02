@@ -6,18 +6,16 @@ The only actively maintained polyfill project [mfranzke/datalist-polyfill](https
 
  [We need smarter dropdowns](https://medium.com/@kollinz/dropdown-alternatives-for-better-mobile-forms-53e40d641b53).
 
- <video width="320" height="568" poster="https://www.visisoft.de/media/datalist_demo_snapshot.png" controls preload>
-    <source src="https://www.visisoft.de/media/datalist_demo_screen_recording.webm" type="video/webm"></source>
-    <source src="https://www.visisoft.de/media/datalist_demo_screen_recording.MP4" type="video/mp4"></source>
-</video>
-
 ### Features
+
+![Screen Recording on iOS11](https://www.visisoft.de/media/datalist_demo_screen_recording.gif)
+
 * Works by attaching a scrollable dropdown-like option list below the targeted input element - no ugly iOS picker wheels are used.
 * Detects changes to the `<datalist>` items and updates option list items accordingly.
 * Tested on iOS 9-11
 
 ### <a name="api"></a> API
-[The Generated Documentation](doc/DataListJS.html)
+[The Generated Documentation](https://rawgit.com/semmel/datalistjs/master/doc/DataListJS.html)
 
 
 ### Caveats
