@@ -10,11 +10,15 @@
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta http-equiv="Expires" content="0" />
 
-	<link type=text/css rel=stylesheet href="datalist.css"/>
 	<style type=text/css>
 		.main {
 			font-size: larger;
 			font-family: sans-serif;
+		}
+
+		.datalist-polyfill-demo li:active {
+			transform: scale(0.9);
+			opacity: 0.2;
 		}
 	</style>
 	<title>datalistjs Demo</title>
@@ -152,7 +156,15 @@
 		{
 			if (DataListJS.isNotNativelySupported)
 			{
-				updatePositions = DataListJS.polyfill();
+				updatePositions = DataListJS.polyfill(
+					document.body,
+					{
+						uListStyle: {
+							cssClassName: 'datalist-polyfill-demo',
+							styles: { maxHeight: "120px" }
+						}
+					}
+				);
 			}
 		}
 	});

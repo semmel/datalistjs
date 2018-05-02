@@ -1,12 +1,33 @@
 /**
- * @file The polyfill in a single file.
+ * @file A <tt>&lt;datalist&gt;</tt> polyfill.
  * Created on 28/04/18 for the datalistjs project.
+ */
+
+/**
+ * JavaScript methods and constants defined by the datalist polyfill.
+ * @namespace DataListJS
+ */
+
+/**
+ * @typedef {Object} PolyfillElementConfiguration
+ * @property {String} [cssClassName='ul-datalist-polyfill'] a user-defined class name is given to each element. <tt>'ul-datalist-polyfill'</tt>
+ * for the <tt>ul</tt> list container
+ * @property {Object} [styles={useful defaults}] *camelCased* CSS rules e.g. <tt>{maxWidth: "200px", backgroundColor: "aliceblue"}</tt>
+ * @memberOf! DataListJS
+ */
+
+/**
+ * @typedef {Object} PolyfillOptions
+ * @property {PolyfillElementConfiguration} [uListStyle] the CSS rules applied to the <tt>ul</tt> option list container as inline style
+ * @property {PolyfillElementConfiguration} [listItemStyle] the CSS rules applied to the <tt>li</tt> list items as inline style.
+ * @memberOf! DataListJS
  */
   
 /**
- * @typedef {Object} Module_datalist
+ * @typedef {Object} Module_datalist The polyfill is a UMD module which is exposed as <tt>DataListJS</tt> to the
+ * browser's JS run context if loaded via <tt>&lt;script&gt;</tt> tag.
  * @property {Boolean} isNotNativelySupported
- * @property {function(HTMLElement=): function():void} polyfill
+ * @property {function(HTMLElement=, PolyfillOptions?): function():void} polyfill
  */
 
 (function (root, factory) {
@@ -27,17 +48,43 @@ function (R, Bacon)
 {
 	// Utility functions which usually are imported form somewhere else
 	
+	const
+		truthy = R.identical(true),
+		falsy = R.identical(false),
+		
+		/** @type {function(Object): function(*, String): void} */
+		ofMutableObjectUpdateValueForKey = R.curry(
+			function(obj, value, key)
+			{
+				obj[key] = value;
+			}
+		);
+	
 	/**
-	 *
+	 * @param {PolyfillElementConfiguration} listItemConfig_
 	 * @param {String} valueText
 	 * @return {HTMLLIElement}
 	 */
-	function createListElementWithValue(valueText)
+	function createListElementWithValueAndConfig(valueText, listItemConfig_)
 	{
 		const
+			/** @type {PolyfillElementConfiguration} */
+			listItemConfig = R.merge({styles: {}}, listItemConfig_ || {}),
+			
+			listElementStyle = R.merge({
+				padding: "3px"
+			}, listItemConfig.styles),
+			
 			listElement = document.createElement('li');
 		
 		listElement.textContent = valueText;
+		
+		if (listItemConfig.cssClassName)
+		{
+			listElement.classList.add(listItemConfig.cssClassName);
+		}
+		
+		R.forEachObjIndexed(ofMutableObjectUpdateValueForKey(listElement.style), listElementStyle);
 		
 		return listElement;
 	}
@@ -150,8 +197,6 @@ function (R, Bacon)
 	}
 	
 	const
-		truthy = R.identical(true),
-		falsy = R.identical(false),
 		/**
 		 *
 		 * @type {function(HTMLElement): function(DocumentFragment): void}
@@ -197,40 +242,82 @@ function (R, Bacon)
 		
 		/**
 		 * @param {HTMLInputElement} inputField
+		 * @param {PolyfillElementConfiguration} [listConfig_]
 		 * @return {HTMLUListElement}
 		 */
-		createSelectionContainerForInput = function(inputField)
+		createSelectionContainerForInput = function(inputField, listConfig_)
 		{
 			const
+				/** @type {PolyfillElementConfiguration} */
+				listConfig = R.merge({cssClassName: 'ul-datalist-polyfill', styles: {}}, listConfig_ || {}),
+				
 				selectBox = document.createElement('ul'),
 				/**
 				 *
 				 * @type {CSSStyleDeclaration}
 				 */
-				inputFieldStyle = window.getComputedStyle(inputField);
+				inputFieldStyle = window.getComputedStyle(inputField),
+				
+				boxStyle = R.merge({
+					display: "none",  // create hidden
+					listStyle: "none",
+					position: "absolute",
+					overflowY: "auto",
+					padding: "0px",
+					margin: "0px",
+					boxShadow: "rgb(128, 128, 128) 0px 2px 2px 0px",
+					maxHeight: "150px",
+					backgroundColor: inputFieldStyle.backgroundColor,
+					color: inputFieldStyle.color
+				}, listConfig.styles || {});
 			
-			selectBox.classList.add('datalist-polyfill');
+			selectBox.classList.add(listConfig.cssClassName);
 			
-			selectBox.style.backgroundColor = inputFieldStyle.backgroundColor;
-			selectBox.style.color = inputFieldStyle.color;
+			R.forEachObjIndexed(ofMutableObjectUpdateValueForKey(selectBox.style), boxStyle);
 			
 			return selectBox;
 		};
 	
 	const
-		 isDatalistSupported = !!(document.createElement('datalist') && window.HTMLDataListElement);
+		/**
+		 * Is the polyfill needed (i.e. are we running on Safari?)
+		 * @type {boolean}
+		 * @memberOf! DataListJS
+		 */
+		 isNotNativelySupported = window.HTMLDataListElement === undefined;
 	
 	/**
-	 *
-	 * @param {HTMLElement} [parent=document.body]
-	 * @return {function(): void} update the positions of the select boxes according to the changed positions of the input elements
+	 * Initializes the inputs and returns a function to re-position the option lists found in the container
+	 * @param {HTMLElement} [parent=document.body] a DOM element which contains the targeted form <tt>input</tt>s.
+	 * @param {DataListJS.PolyfillOptions} [polyfillConfiguration_] a configuration object used to customize the css of the generated DOM elements
+	 * which make up the polyfill
+	 * @return {function(): void} A function which updates the positions of the generated compensatory select boxes
+	 * according to the positions of the input elements. The implementation should call this function when the web page
+	 * layout has changed the positions of the form `input`s.
+	 * @memberOf! DataListJS
+	 * @example
+	 * if (DataListJS.isNotNativelySupported){
+	 *    updatePositions = DataListJS.polyfill(
+	 *       document.body,
+	 *       {
+	 *          uListStyle: {
+	 *             cssClassName: 'datalist-polyfill-demo',
+	 *             styles: { maxHeight: "120px" }
+	 *          }
+	 *       }
+	 *    );
+	 *}
 	 */
-	function initialize(parent)
+	function polyfill(parent, polyfillConfiguration_)
 	{
 		const
+			polyfillConfiguration = polyfillConfiguration_ || {},
+			
 			inputs = (parent || document.body).querySelectorAll('input[list]'),
 			
 			resizingPage = Bacon.fromEvent(window, 'resize'),
+			
+			createListElementWithValue = R.partialRight(createListElementWithValueAndConfig, [polyfillConfiguration.listItemStyle]),
 		
 			/**
 			 *
@@ -240,7 +327,7 @@ function (R, Bacon)
 			setupInputElement = function (inputElement)
 			{
 				const
-					selectBox = createSelectionContainerForInput(inputElement),
+					selectBox = createSelectionContainerForInput(inputElement, polyfillConfiguration.uListStyle),
 					dataListElement = /** @type {HTMLDataListElement} */ document.getElementById(inputElement.getAttribute('list')),
 					optionsLiveCollection = dataListElement.getElementsByTagName('option'),
 					
@@ -376,7 +463,7 @@ function (R, Bacon)
 	}
 	
 	return {
-		polyfill: initialize,
-		isNotNativelySupported: !isDatalistSupported
+		polyfill: polyfill,
+		isNotNativelySupported: isNotNativelySupported
 	};
 }));
