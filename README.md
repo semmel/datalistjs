@@ -1,4 +1,6 @@
 # datalistjs
+<img align="right" src="https://www.visisoft.de/media/datalist_demo_screen_recording.gif"/>
+
 yet another [`<datalist>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist) implementation for Safari (the only browser still [not supporting](https://caniuse.com/#feat=datalist) `<datalist>`)
 
 ### Motivation
@@ -7,8 +9,6 @@ The only actively maintained polyfill project [mfranzke/datalist-polyfill](https
  [We need smarter dropdowns](https://medium.com/@kollinz/dropdown-alternatives-for-better-mobile-forms-53e40d641b53).
 
 ### Features
-
-![Screen Recording on iOS11](https://www.visisoft.de/media/datalist_demo_screen_recording.gif)
 
 * Works by attaching a scrollable dropdown-like option list below the targeted input element - no ugly iOS picker wheels are used.
 * Detects changes to the `<datalist>` items and updates option list items accordingly.
