@@ -1,5 +1,5 @@
 # datalistjs
-<img align="right" src="/artwork/datalist_demo_screen_recording.gif?raw=true"/>
+<img align="right" src="/artwork/datalist_demo_screen_recording.gif"/>
 
 yet another [`<datalist>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist) implementation for Safari (the only browser still [not supporting](https://caniuse.com/#feat=datalist) `<datalist>`)
 
@@ -15,22 +15,25 @@ The only actively maintained polyfill project [mfranzke/datalist-polyfill](https
 * Tested on iOS 9-11
 
 ### <a name="api"></a> API
-[The Generated Documentation](https://rawgit.com/semmel/datalistjs/master/doc/DataListJS.html)
+See [generated documentation files](https://rawgit.com/semmel/datalistjs/master/doc/DataListJS.html)
 
 
 ### Caveats
-* Since the generated selection boxes are positioned `absolute` below the inputs at initialization time, any position movements of their dedicated input elements will separate both. Except when *resizing* occurs the selection boxes should be re-positioned by the implementation. See the [API](#api)
-* No support for cursor-key selection using the keyboard (Desktop Safari is currently not targeted)
-* Since JS inline styles cannot target CSS pseudo classes, the styling of the touch interaction with the options in the list (`.ul-datalist-polyfill li:active`) should be done by the implementor.
+* Since the generated selection boxes are positioned `absolute` below the inputs at initialization time, any position movements of their dedicated input elements will destroy their alignment. Except when *resizing* occurs the selection boxes should be re-positioned by the implementation. See the [API](#api)
+* No support for *cursor-key option selection* using the keyboard (Desktop Safari is currently not targeted)
+* Since JS inline styles cannot target CSS pseudo classes, the styling of the *touch interaction* with the options in the list (`.ul-datalist-polyfill li:active`) should be done by the implementor.
 ```css
 .datalist-polyfill-demo li:active {
     transform: scale(0.9);
     opacity: 0.2;
 }
 ```
+* Another side effect of setting the style property `position: absolute` for the generated dropdown container is that the implementation must take care to make any scroll-able parent element of the input field also their [Offset Parent](https://developer.mozilla.org/en-US/docs/Web/API/HTMLelement/offsetParent) e.g. by setting `position: relative;`
+
+<img alt="Make the scrollable ancestor of the input it's offset parent" src="/artwork/datalistpolyfill-css.png" width="710" height="480"/>
 
 ### Worthy of note
-* Not dependecy-free: Need [Bacon.js](https://baconjs.github.io/) and [Ramda](http://ramdajs.com) for the functional utility toolbelt.
+* Not dependency-free: Need [Bacon.js](https://baconjs.github.io/) and [Ramda](http://ramdajs.com) for the functional utility toolbelt.
 * [UMD-style](https://github.com/umdjs/umd) module
 
 ### References
@@ -38,7 +41,7 @@ The only actively maintained polyfill project [mfranzke/datalist-polyfill](https
 * [Fyrd/purejs-datalist-polyfill](https://github.com/Fyrd/purejs-datalist-polyfill)
 
 ### Example
-see `demo.html`:
+Also see [`demo.html`](demo.html).
 ```html
 <p>
     <label>Select a browser:</label>
@@ -55,9 +58,7 @@ see `demo.html`:
 </datalist>
 ...
 <!-- no JS module loader used -->
-<script src="node_modules/ramda/dist/ramda.js"></script>
-<script src="node_modules/baconjs/dist/Bacon.js"></script>
-<script src="datalist.js"></script>
+<script src="dist/datalist.min.js"></script>
 <script>
 var updatePositions = R.identity;
 
@@ -85,5 +86,19 @@ document.addEventListener('readystatechange', function()
 ##### Generate Docs
 Install [JSDoc](http://usejsdoc.org/).
 ```shell
+npm install -g jsdoc
+```
+Build
+```shell
 npm run docs
+```
+##### Build distribution files
+Install [RequireJS Optimizer](http://requirejs.org/docs/optimization.html)
+```shell
+npm install -g requirejs
+```
+Need the latest release of [almond.js](https://github.com/requirejs/almond) in the `build` folder. Included is [a version](build/almond.js).
+Generate bundled and minified JS files for distribution.
+```shell
+npm run zip
 ```

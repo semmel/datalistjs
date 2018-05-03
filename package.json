@@ -9,7 +9,8 @@
   },
 	"scripts": {
     "test": "mocha",
-		"docs": "jsdoc datalist.js --configure jsdoc.conf.json --destination doc/"
+		"docs": "jsdoc datalist.js --configure jsdoc.conf.json --destination doc/",
+		"zip": "./build/build.sh"
   },
   "keywords": [
     "datalist"
