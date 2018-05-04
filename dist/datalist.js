@@ -1,3 +1,17 @@
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        //Allow using this built library as an AMD module
+        //in another project. That other project will only
+        //see this AMD call, not the internal modules in
+        //the closure below.
+        define([], factory);
+    } else {
+        //Browser globals case. Just assign the
+        //result to a property on the global.
+        root.DataListJS = factory();
+    }
+}(this, function () {
+    //almond, and your modules will be inlined here
 /**
  * @license almond 0.3.3 Copyright jQuery Foundation and other contributors.
  * Released under MIT license, http://github.com/requirejs/almond/LICENSE
@@ -13564,6 +13578,7 @@ function (R, Bacon)
 					margin: "0px",
 					boxShadow: "rgb(128, 128, 128) 0px 2px 2px 0px",
 					maxHeight: "150px",
+					zIndex: "1",
 					backgroundColor: inputFieldStyle.backgroundColor,
 					color: inputFieldStyle.color
 				}, listConfig.styles || {});
@@ -13763,6 +13778,12 @@ function (R, Bacon)
 		polyfill: polyfill,
 		isNotNativelySupported: isNotNativelySupported
 	};
+}));
+//The modules for your project will be inlined above
+    //this snippet. Ask almond to synchronously require the
+    //module value for 'main' here and return it as the
+    //value to use for the public API for the built file.
+    return require('datalist');
 }));
 
 //# sourceMappingURL=datalist.js.map

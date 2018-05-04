@@ -16,8 +16,10 @@
 
 	preserveLicenseComments: true,
 
-	// set to true for wrapping a library in a function block
-	wrap : false,
+	wrap: {
+        startFile: 'start_fragment.js',
+        endFile: 'end_fragment.js'
+    },
 
 	out: "../dist/datalist.min.js",
 

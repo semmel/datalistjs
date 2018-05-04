@@ -267,6 +267,7 @@ function (R, Bacon)
 					margin: "0px",
 					boxShadow: "rgb(128, 128, 128) 0px 2px 2px 0px",
 					maxHeight: "150px",
+					zIndex: "1",
 					backgroundColor: inputFieldStyle.backgroundColor,
 					color: inputFieldStyle.color
 				}, listConfig.styles || {});

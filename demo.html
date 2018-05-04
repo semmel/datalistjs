@@ -157,11 +157,9 @@
         asdfasdf<br>
 	</div>
 </div>
-<script src="node_modules/ramda/dist/ramda.js"></script>
-<script src="node_modules/baconjs/dist/Bacon.js"></script>
-<script src="datalist.js"></script>
+<script src="dist/datalist.js"></script>
 <script>
-	var updatePositions = R.identity;
+	var updatePositions = function(){};
 
 	document.addEventListener('readystatechange', function()
 	{
@@ -174,7 +172,10 @@
 					{
 						uListStyle: {
 							cssClassName: 'datalist-polyfill-demo',
-							styles: { maxHeight: "120px" }
+							styles: {
+								maxHeight: "150px",
+								zIndex: "1"
+							}
 						}
 					}
 				);
