@@ -15,7 +15,7 @@ The only actively maintained polyfill project [mfranzke/datalist-polyfill](https
 * Tested on iOS 9-11
 
 ### <a name="api"></a> API
-See [generated documentation files](https://rawgit.com/semmel/datalistjs/master/doc/DataListJS.html)
+See the [generated documentation files (v1.0](https://cdn.rawgit.com/semmel/datalistjs/47ee9db2/doc/DataListJS.html)
 
 
 ### Caveats
@@ -36,7 +36,7 @@ The generated dropdown container is inserted *right after the input element* int
 <img alt="Make the scrollable ancestor of the input it's offset parent" src="/artwork/datalistpolyfill-css.png" width="710" height="480"/>
 
 * Being part of the same [stacking context](https://philipwalton.com/articles/what-no-one-told-you-about-z-index/) as the input element, the generated dropdown is subject to the limitations in the stacking order.
-   * The implementation should assign a `zIndex` style property in the [`PolyfillOptions`](https://rawgit.com/semmel/datalistjs/master/doc/DataListJS.html#.PolyfillOptions) to lift up the dropdown at least inside it's stacking context.
+   * The implementation should assign a `zIndex` style property in the [`PolyfillOptions`](https://cdn.rawgit.com/semmel/datalistjs/47ee9db2/doc/DataListJS.html#.PolyfillOptions) to lift up the dropdown at least inside it's stacking context.
    * The dropdown cannot protrude it's stacking context root element if the available space is insufficient. (See `demo.html`)
 
 ### Worthy of note
