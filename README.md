@@ -48,8 +48,12 @@ The generated dropdown container is inserted *right after the input element* int
 * [willmcpo/body-scroll-lock](https://github.com/willmcpo/body-scroll-lock)
 * [Fyrd/purejs-datalist-polyfill](https://github.com/Fyrd/purejs-datalist-polyfill)
 
-### Example
-Also see [`demo.html`](demo.html).
+### Usage
+* Download [the latest release](https://github.com/semmel/datalistjs/releases/latest).
+
+Either
+* load `dist/datalist.min.js` by `<script>` tag (see [`demo.html`](demo.html)), or
+* include `datalist.js` in your AMD/CommonJS module aware project.
 ```html
 <p>
     <label>Select a browser:</label>
@@ -68,7 +72,7 @@ Also see [`demo.html`](demo.html).
 <!-- no JS module loader used -->
 <script src="dist/datalist.min.js"></script>
 <script>
-var updatePositions = R.identity;
+var updatePositions = function(){};
 
 document.addEventListener('readystatechange', function()
 {
