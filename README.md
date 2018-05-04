@@ -15,7 +15,7 @@ The only actively maintained polyfill project [mfranzke/datalist-polyfill](https
 * Tested on iOS 9-11
 
 ### <a name="api"></a> API
-See the [generated documentation files (v1.0](https://cdn.rawgit.com/semmel/datalistjs/47ee9db2/doc/DataListJS.html)
+See the [generated documentation files (v1.0)](https://cdn.rawgit.com/semmel/datalistjs/47ee9db2/doc/DataListJS.html)
 
 
 ### Caveats
