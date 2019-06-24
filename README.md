@@ -1,10 +1,10 @@
 # datalistjs
 <img align="right" src="/artwork/datalist_demo_screen_recording.gif"/>
 
-yet another [`<datalist>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist) implementation for Safari (the only browser still [not supporting](https://caniuse.com/#feat=datalist) `<datalist>`)
+yet another [`<datalist>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist) implementation for Safari (since 12.1  [`<datalist>` is natively supported](https://caniuse.com/#feat=datalist))
 
 ### Motivation
-The only actively maintained polyfill project [mfranzke/datalist-polyfill](https://github.com/mfranzke/datalist-polyfill) chooses to employ the [iOS wheel picker](https://developer.apple.com/ios/human-interface-guidelines/controls/pickers/) presenting the selection options. Which IMO takes up huge space, is obtrusive and thus really breaks the UI!
+The only actively maintained polyfill project [mfranzke/datalist-polyfill](https://github.com/mfranzke/datalist-polyfill) and the native Safari 12.1 implementation choose to employ the [iOS wheel picker](https://developer.apple.com/ios/human-interface-guidelines/controls/pickers/) presenting the selection options. Which IMO takes up huge space, is obtrusive and thus really breaks the UI!
 
  [We need smarter dropdowns](https://medium.com/@kollinz/dropdown-alternatives-for-better-mobile-forms-53e40d641b53).
 
